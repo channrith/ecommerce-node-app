@@ -1,3 +1,3 @@
-import getUserAction from './getUserAction';
+import getUserByIdAction from './getUserByIdAction';
 
-export { getUserAction };
+export { getUserByIdAction };

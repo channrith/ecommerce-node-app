@@ -1,8 +1,10 @@
 import { asyncHandler } from '../../middleware';
 import { User } from '../../models';
+import { badRequest } from '../../utils';
 
-const getUserAction = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.userId).select({
+const getUserByIdAction = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+  const user = await User.findById(userId).select({
     name: 1,
     history: 1,
     role: 1,
@@ -12,11 +14,7 @@ const getUserAction = asyncHandler(async (req, res) => {
   });
 
   if (!user) {
-    return res.status(400).json({
-      error: 1,
-      message: 'User not existed',
-      data: { user },
-    });
+    return badRequest(res, 'User not existed');
   }
 
   return res.json({
@@ -26,4 +24,4 @@ const getUserAction = asyncHandler(async (req, res) => {
   });
 });
 
-export default getUserAction;
+export default getUserByIdAction;
