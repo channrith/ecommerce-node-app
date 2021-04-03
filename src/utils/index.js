@@ -1,2 +1,2 @@
 export * from './commonUtil';
-export * from './httpUtil';
+export * from './httpResponseUtil';

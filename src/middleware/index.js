@@ -1,5 +1,5 @@
 import asyncHandler from './asyncHandler';
 import errorHandler from './errorHandler';
-import requireAuth from './requireAuth';
+import authenticateJWT from './authenticateJWT';
 
-export { asyncHandler, errorHandler, requireAuth };
+export { asyncHandler, errorHandler, authenticateJWT };

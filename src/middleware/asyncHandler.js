@@ -1,3 +1,5 @@
+import { responseJson } from '../utils';
+
 /**
  * Get unique error field name
  */
@@ -50,7 +52,7 @@ const asyncHandler = (fn) => async (req, res, next) => {
   try {
     await fn(req, res, next);
   } catch (error) {
-    res.json({ error: { message: errorHandler(error) } });
+    return responseJson(res, {}, errorHandler(error));
   }
 
   next();

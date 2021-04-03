@@ -16,7 +16,7 @@ const HTTP_STATUS_CODE = {
 };
 
 const HTTP_RESPONSE_MESSAGE = {
-  OK: 'OK',
+  OK: 'Succeeded',
   CREATED: 'Created',
   NO_CONTENT: 'No Content',
   BAD_REQUEST: 'Bad Request',

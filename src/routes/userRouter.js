@@ -1,9 +1,8 @@
 import express from 'express';
-import { requireAuth } from '../middleware';
+import { authenticateJWT } from '../middleware';
 import { getUserByIdAction } from '../controllers/user';
 
 const router = express.Router();
-
-router.get('/user/:userId', requireAuth, getUserByIdAction);
+router.get('/user/:userId', authenticateJWT, getUserByIdAction);
 
 export default router;

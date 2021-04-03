@@ -1,6 +1,6 @@
 import { asyncHandler } from '../../middleware';
 import { User } from '../../models';
-import { badRequest } from '../../utils';
+import { responseJson, responseBadRequest } from '../../utils';
 
 const getUserByIdAction = asyncHandler(async (req, res) => {
   const { userId } = req.params;
@@ -14,14 +14,11 @@ const getUserByIdAction = asyncHandler(async (req, res) => {
   });
 
   if (!user) {
-    return badRequest(res, 'User not existed');
+    const errorMessage = 'User not existed';
+    return responseBadRequest(res, errorMessage);
   }
 
-  return res.json({
-    error: 0,
-    message: 'Success',
-    data: { user },
-  });
+  return responseJson(res, user);
 });
 
 export default getUserByIdAction;
