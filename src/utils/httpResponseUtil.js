@@ -9,8 +9,26 @@ export const responseJson = (
   data = {},
   message = HTTP_RESPONSE_MESSAGE.OK
 ) => {
+  const status = HTTP_STATUS_CODE.OK;
+  return res.status(status).json({
+    status,
+    message,
+    data,
+  });
+};
+
+/**
+ * Description: The server can not find the requested resource
+ * Return: 404 Not Found
+ */
+export const responseNotFound = (
+  res,
+  data = {},
+  message = HTTP_RESPONSE_MESSAGE.NOT_FOUND
+) => {
+  const status = HTTP_STATUS_CODE.NOT_FOUND;
   return res.status(HTTP_STATUS_CODE.OK).json({
-    error: 0,
+    status,
     message,
     data,
   });
@@ -25,8 +43,9 @@ export const responseBadRequest = (
   message = HTTP_RESPONSE_MESSAGE.BAD_REQUEST,
   data = {}
 ) => {
-  return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({
-    error: 1,
+  const status = HTTP_STATUS_CODE.BAD_REQUEST;
+  return res.status(status).json({
+    status,
     message,
     data,
   });
@@ -41,8 +60,9 @@ export const responseUnauthorizedRequest = (
   message = HTTP_RESPONSE_MESSAGE.UNAUTHORIZED,
   data = {}
 ) => {
-  return res.status(HTTP_STATUS_CODE.UNAUTHORIZED).json({
-    error: 1,
+  const status = HTTP_STATUS_CODE.UNAUTHORIZED;
+  return res.status(status).json({
+    status,
     message,
     data,
   });
@@ -57,8 +77,26 @@ export const responseForbiddenRequest = (
   message = HTTP_RESPONSE_MESSAGE.FORBIDDEN,
   data = {}
 ) => {
-  return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({
-    error: 1,
+  const status = HTTP_STATUS_CODE.FORBIDDEN;
+  return res.status(status).json({
+    status,
+    message,
+    data,
+  });
+};
+
+/**
+ * Description: The server has encountered a situation it doesn't know how to handle
+ * Return: 500 Internal Server Error
+ */
+export const responseInternalServerError = (
+  res,
+  message = HTTP_RESPONSE_MESSAGE.INTERNAL_SERVER_ERROR,
+  data = {}
+) => {
+  const status = HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR;
+  return res.status(status).json({
+    status,
     message,
     data,
   });

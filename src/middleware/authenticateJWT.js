@@ -1,25 +1,30 @@
 import jwt from 'jsonwebtoken';
 import { ENV } from '../constants';
 import {
-  responseForbiddenRequest,
+  responseBadRequest,
+  // responseForbiddenRequest,
   responseUnauthorizedRequest,
 } from '../utils';
 
 const authenticateJWT = async (req, res, next) => {
   const authHeader = req.headers.authorization;
-  if (!authHeader) {
-    return responseUnauthorizedRequest(res);
-  }
+  // make sure the value of authorization header is given
+  if (!authHeader) return responseUnauthorizedRequest(res);
 
   const token = authHeader.split(' ')[1];
-  jwt.verify(token, ENV.JWT_SECRET, (err, user) => {
-    if (err) {
-      return responseForbiddenRequest(res);
-    }
+  // make sure the value is a valid bearer token
+  if (!token) return responseBadRequest(res, 'Invalid bearer token');
 
-    req.auth = user;
-    next();
+  const [user, err] = jwt.verify(token, ENV.JWT_SECRET, (error, data) => {
+    if (error) return [null, error];
+    return [data, null];
   });
+
+  // if (err) return responseForbiddenRequest(res);
+  if (err) return responseUnauthorizedRequest(res);
+  req.auth = user;
+
+  return next();
 };
 
 export default authenticateJWT;

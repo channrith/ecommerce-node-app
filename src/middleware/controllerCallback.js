@@ -48,14 +48,13 @@ const errorHandler = (error) => {
   return message;
 };
 
-const asyncHandler = (fn) => async (req, res, next) => {
+const controllerCallback = async (actionHandler, { req, res, next }) => {
   try {
-    await fn(req, res, next);
+    return await actionHandler(req, res, next);
   } catch (error) {
+    console.log('Function controllerCallback:', error);
     return responseJson(res, {}, errorHandler(error));
   }
-
-  next();
 };
 
-export default asyncHandler;
+export default controllerCallback;

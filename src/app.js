@@ -20,7 +20,7 @@ const startServer = async () => {
   // Routes middleware
   app.use('/api', authRouter);
   app.use('/api', userRouter);
-  // Error handling
+  // Error handling middleware
   app.use(errorHandler);
 
   app.listen(ENV.APP_PORT, () => {

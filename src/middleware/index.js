@@ -1,5 +1,5 @@
-import asyncHandler from './asyncHandler';
-import errorHandler from './errorHandler';
 import authenticateJWT from './authenticateJWT';
+import controllerCallback from './controllerCallback';
+import errorHandler from './errorHandler';
 
-export { asyncHandler, errorHandler, authenticateJWT };
+export { authenticateJWT, controllerCallback, errorHandler };

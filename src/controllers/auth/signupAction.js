@@ -1,9 +1,8 @@
 import { validationResult } from 'express-validator';
 import { User } from '../../models';
-import { asyncHandler } from '../../middleware';
 import { validationErrorFormat } from '../../utils';
 
-const signupAction = asyncHandler(async (req, res) => {
+const signupAction = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const { message } = validationErrorFormat(errors);
@@ -31,6 +30,6 @@ const signupAction = asyncHandler(async (req, res) => {
       updatedAt,
     },
   });
-});
+};
 
 export default signupAction;

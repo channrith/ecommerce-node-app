@@ -1,10 +1,9 @@
 import { validationResult } from 'express-validator';
 import jwt from 'jsonwebtoken'; // to generate signed token
-import { asyncHandler } from '../../middleware';
 import { validationErrorFormat } from '../../utils';
 import { User } from '../../models';
 
-const logInAction = asyncHandler(async (req, res) => {
+const logInAction = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const { message } = validationErrorFormat(errors);
@@ -36,6 +35,6 @@ const logInAction = asyncHandler(async (req, res) => {
   // return response with user and token to frontend client
   const { _id, name, role } = user;
   return res.json({ token, user: { _id, email: user.email, name, role } });
-});
+};
 
 export default logInAction;

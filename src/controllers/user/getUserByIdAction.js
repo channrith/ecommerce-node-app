@@ -1,8 +1,7 @@
-import { asyncHandler } from '../../middleware';
 import { User } from '../../models';
 import { responseJson, responseBadRequest } from '../../utils';
 
-const getUserByIdAction = asyncHandler(async (req, res) => {
+const getUserByIdAction = async (req, res) => {
   const { userId } = req.params;
   const user = await User.findById(userId).select({
     name: 1,
@@ -19,6 +18,6 @@ const getUserByIdAction = asyncHandler(async (req, res) => {
   }
 
   return responseJson(res, user);
-});
+};
 
 export default getUserByIdAction;
