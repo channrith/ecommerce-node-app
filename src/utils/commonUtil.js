@@ -1,4 +1,16 @@
 /**
+ * Print error detail to console
+ */
+export const printError = (functionName, errorMessage) => {
+  const dt = new Date(new Date().getTime());
+  console.log(
+    `<<<<<<<< Function ${functionName}:`,
+    errorMessage,
+    dt.toString()
+  );
+};
+
+/**
  * Return validation error message
  */
 export const validationErrorFormat = (errors) => {

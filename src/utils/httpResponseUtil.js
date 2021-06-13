@@ -18,13 +18,47 @@ export const responseJson = (
 };
 
 /**
+ * Description: The request has succeeded and a new resource has been created
+ * Return: 201 Created
+ */
+export const responseResourceCreated = (
+  res,
+  message = HTTP_RESPONSE_MESSAGE.CREATED,
+  data = {}
+) => {
+  const status = HTTP_STATUS_CODE.CREATED;
+  return res.status(status).json({
+    status,
+    message,
+    data,
+  });
+};
+
+/**
+ * Description: The user-agent may update its cached headers for this resource with the new ones
+ * Return: 204 No Content
+ */
+export const responseNoContent = (
+  res,
+  message = HTTP_RESPONSE_MESSAGE.NO_CONTENT,
+  data = {}
+) => {
+  const status = HTTP_STATUS_CODE.NO_CONTENT;
+  return res.status(status).json({
+    status,
+    message,
+    data,
+  });
+};
+
+/**
  * Description: The server can not find the requested resource
  * Return: 404 Not Found
  */
 export const responseNotFound = (
   res,
-  data = {},
-  message = HTTP_RESPONSE_MESSAGE.NOT_FOUND
+  message = HTTP_RESPONSE_MESSAGE.NOT_FOUND,
+  data = {}
 ) => {
   const status = HTTP_STATUS_CODE.NOT_FOUND;
   return res.status(HTTP_STATUS_CODE.OK).json({

@@ -1,5 +1,5 @@
 import { User } from '../../models';
-import { responseJson, responseBadRequest } from '../../utils';
+import { responseJson, responseNotFound } from '../../utils';
 
 const getUserByIdAction = async (req, res) => {
   const { userId } = req.params;
@@ -13,8 +13,8 @@ const getUserByIdAction = async (req, res) => {
   });
 
   if (!user) {
-    const errorMessage = 'User not existed';
-    return responseBadRequest(res, errorMessage);
+    const errorMessage = 'Resource not found';
+    return responseNotFound(res, errorMessage);
   }
 
   return responseJson(res, user);
