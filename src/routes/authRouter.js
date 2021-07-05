@@ -1,9 +1,24 @@
 import express from 'express';
-import { signupAction, logInAction, logOutAction } from '../controllers/auth';
+import {
+  refreshTokenAction,
+  signupAction,
+  logInAction,
+  logOutAction,
+} from '../controllers/auth';
 import { authenticateJWT, controllerCallback } from '../middleware';
 import { signupValidator, loginValidator } from '../validators';
 
 const router = express.Router();
+
+// refresh token route
+router.post('/refresh-token', async (req, res, next) => {
+  const handler = await controllerCallback(refreshTokenAction, {
+    req,
+    res,
+    next,
+  });
+  return handler;
+});
 
 // signup route
 router.post('/signup', signupValidator, async (req, res, next) => {

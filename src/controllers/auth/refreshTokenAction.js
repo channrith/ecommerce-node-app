@@ -5,36 +5,47 @@ import {
   signToken,
   validationErrorFormat,
   printError,
+  verifyToken,
 } from '../../utils';
 import { redis } from '../../configs';
 import { ENV, COOKIE_KEY, REDIS_KEY } from '../../constants';
 import { User } from '../../models';
 
-const logInAction = async (req, res) => {
+const refreshTokenAction = async (req, res) => {
   const errors = validationResult(req).array();
   if (errors.length) {
     const { message } = validationErrorFormat(errors);
     return responseJson(res, createHttpError.badRequest(message));
   }
 
-  // find the user based on email
-  const { email, password } = req.body;
-  const user = await User.findOne({ email });
+  const token =
+    req.cookies[`${COOKIE_KEY.REFRESH_TOKEN}`] || req.body.refreshToken;
+
+  if (!token)
+    return responseJson(
+      res,
+      createHttpError.badRequest(
+        'refreshToken',
+        'Refresh token field is required'
+      )
+    );
+
+  const [decoded, err] = verifyToken(token, ENV.JWT_SECRET_REFRESH);
+  if (err) return responseJson(res, createHttpError.unauthorized());
+
+  // if token is not a valid token list
+  const redisKey = `${REDIS_KEY.REFRESH_TOKEN}:${decoded._id}`;
+  const validToken = await redis.get(redisKey);
+  if (!validToken || (validToken && validToken !== token))
+    return responseJson(res, createHttpError.unauthorized('Session expired'));
+
+  const user = await User.findById(decoded._id);
   if (!user)
     return responseJson(
       res,
-      createHttpError.badRequest('Email does not exist. Please signup')
+      createHttpError.unauthorized('Account does not exist')
     );
-
-  // if user is found make sure the email and password match
-  // create authenticate method in user model
-  if (!user.authenticate(password))
-    return responseJson(
-      res,
-      createHttpError.unauthorized('Email or password does not match')
-    );
-
-  const { _id, name, role } = user;
+  const { _id, name, email, role } = user;
 
   // generate access token
   const [accessToken, accessTokenErr] = signToken({
@@ -71,7 +82,7 @@ const logInAction = async (req, res) => {
     );
   }
 
-  // persist the refresh token as 'tc_refresh_token' in cookie
+  // persist the refresh token in cookie
   res.cookie(COOKIE_KEY.REFRESH_TOKEN, refreshToken);
 
   // persist the refresh token in redis with expiry date
@@ -95,4 +106,4 @@ const logInAction = async (req, res) => {
   });
 };
 
-export default logInAction;
+export default refreshTokenAction;

@@ -1,3 +1,4 @@
-import dbConnect from './dbConfig';
+import connectDb from './dbConfig';
+import redis from './redisConfig';
 
-export { dbConnect };
+export { connectDb, redis };

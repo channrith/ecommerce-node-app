@@ -1,5 +1,6 @@
 import signupAction from './signupAction';
 import logInAction from './logInAction';
 import logOutAction from './logOutAction';
+import refreshTokenAction from './refreshTokenAction';
 
-export { signupAction, logInAction, logOutAction };
+export { refreshTokenAction, signupAction, logInAction, logOutAction };

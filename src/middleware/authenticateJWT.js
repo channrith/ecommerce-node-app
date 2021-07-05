@@ -1,28 +1,36 @@
-import jwt from 'jsonwebtoken';
-import { ENV } from '../constants';
-import {
-  responseBadRequest,
-  // responseForbiddenRequest,
-  responseUnauthorizedRequest,
-} from '../utils';
+import { redis } from '../configs';
+import { ENV, REDIS_KEY } from '../constants';
+import { createHttpError, responseJson, verifyToken } from '../utils';
 
 const authenticateJWT = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  // make sure the value of authorization header is given
-  if (!authHeader) return responseUnauthorizedRequest(res);
+  const { authorization } = req.headers;
 
-  const token = authHeader.split(' ')[1];
+  // make sure the value of authorization header is present
+  if (!authorization)
+    return responseJson(
+      res,
+      createHttpError.badRequest('Authentication token is missing')
+    );
+
   // make sure the value is a valid bearer token
-  if (!token) return responseBadRequest(res, 'Invalid bearer token');
+  const token = authorization.split(' ')[1];
+  if (!token)
+    return responseJson(
+      res,
+      createHttpError.badRequest('Invalid bearer token')
+    );
 
-  const [user, err] = jwt.verify(token, ENV.JWT_SECRET, (error, data) => {
-    if (error) return [null, error];
-    return [data, null];
-  });
+  // start verify token width JWT
+  const [decoded, err] = verifyToken(token, ENV.JWT_SECRET);
+  if (err) return responseJson(res, createHttpError.unauthorized());
 
-  // if (err) return responseForbiddenRequest(res);
-  if (err) return responseUnauthorizedRequest(res);
-  req.auth = user;
+  // if token is not a valid token list
+  const redisKey = `${REDIS_KEY.ACCESS_TOKEN}:${decoded._id}`;
+  const validToken = await redis.get(redisKey);
+  if (!validToken || (validToken && validToken !== token))
+    return responseJson(res, createHttpError.unauthorized('Session expired'));
+
+  req.auth = decoded;
 
   return next();
 };

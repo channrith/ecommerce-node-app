@@ -1,137 +1,90 @@
 import { HTTP_STATUS_CODE, HTTP_RESPONSE_MESSAGE } from '../constants';
+import { isJsonString } from './commonUtil';
 
-/**
- * Description: The request has succeeded
- * Return: 200 OK
- */
-export const responseJson = (
-  res,
-  data = {},
-  message = HTTP_RESPONSE_MESSAGE.OK
-) => {
-  const status = HTTP_STATUS_CODE.OK;
-  return res.status(status).json({
-    status,
-    message,
-    data,
-  });
+export const createHttpError = {
+  /**
+   * Description: The server could not understand the request due to invalid syntax
+   * Return: 400 Bad Request
+   */
+  badRequest: (message = HTTP_RESPONSE_MESSAGE.BAD_REQUEST) => {
+    const status = HTTP_STATUS_CODE.BAD_REQUEST;
+    return JSON.stringify({
+      status,
+      message,
+      data: {},
+    });
+  },
+
+  /**
+   * Description: The server can not find the requested resource
+   * Return: 404 Not Found
+   */
+  notFound: (message = HTTP_RESPONSE_MESSAGE.NOT_FOUND) => {
+    const status = HTTP_STATUS_CODE.NOT_FOUND;
+    return JSON.stringify({
+      status,
+      message,
+      data: {},
+    });
+  },
+
+  /**
+   * Description: This mean unauthenticated
+   * Return: 401 Unauthorized
+   */
+  unauthorized: (message = HTTP_RESPONSE_MESSAGE.UNAUTHORIZED) => {
+    const status = HTTP_STATUS_CODE.UNAUTHORIZED;
+    return JSON.stringify({
+      status,
+      message,
+      data: {},
+    });
+  },
+
+  /**
+   * Description: The client does not have access rights to the content
+   * Return: 403 Forbidden
+   */
+  forbidden: (message = HTTP_RESPONSE_MESSAGE.FORBIDDEN) => {
+    const status = HTTP_STATUS_CODE.FORBIDDEN;
+    return JSON.stringify({
+      status,
+      message,
+      data: {},
+    });
+  },
+
+  /**
+   * Description: The server has encountered a situation it doesn't know how to handle
+   * Return: 500 Internal Server Error
+   */
+  internalServerError: (
+    message = HTTP_RESPONSE_MESSAGE.INTERNAL_SERVER_ERROR
+  ) => {
+    const status = HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR;
+    return JSON.stringify({
+      status,
+      message,
+      data: {},
+    });
+  },
 };
 
 /**
- * Description: The request has succeeded and a new resource has been created
- * Return: 201 Created
+ * Description: HTTP Response JSON data with HTTP status
  */
-export const responseResourceCreated = (
-  res,
-  message = HTTP_RESPONSE_MESSAGE.CREATED,
-  data = {}
-) => {
-  const status = HTTP_STATUS_CODE.CREATED;
-  return res.status(status).json({
-    status,
-    message,
-    data,
-  });
-};
+export const responseJson = (res, data) => {
+  const response = isJsonString(data)
+    ? JSON.parse(data)
+    : {
+        status: HTTP_STATUS_CODE.OK,
+        message: HTTP_RESPONSE_MESSAGE.OK,
+        data,
+      };
 
-/**
- * Description: The user-agent may update its cached headers for this resource with the new ones
- * Return: 204 No Content
- */
-export const responseNoContent = (
-  res,
-  message = HTTP_RESPONSE_MESSAGE.NO_CONTENT,
-  data = {}
-) => {
-  const status = HTTP_STATUS_CODE.NO_CONTENT;
-  return res.status(status).json({
-    status,
-    message,
-    data,
-  });
-};
-
-/**
- * Description: The server can not find the requested resource
- * Return: 404 Not Found
- */
-export const responseNotFound = (
-  res,
-  message = HTTP_RESPONSE_MESSAGE.NOT_FOUND,
-  data = {}
-) => {
-  const status = HTTP_STATUS_CODE.NOT_FOUND;
-  return res.status(HTTP_STATUS_CODE.OK).json({
-    status,
-    message,
-    data,
-  });
-};
-
-/**
- * Description: The server could not understand the request due to invalid syntax
- * Return: 400 Bad Request
- */
-export const responseBadRequest = (
-  res,
-  message = HTTP_RESPONSE_MESSAGE.BAD_REQUEST,
-  data = {}
-) => {
-  const status = HTTP_STATUS_CODE.BAD_REQUEST;
-  return res.status(status).json({
-    status,
-    message,
-    data,
-  });
-};
-
-/**
- * Description: This mean unauthenticated
- * Return: 401 Unauthorized
- */
-export const responseUnauthorizedRequest = (
-  res,
-  message = HTTP_RESPONSE_MESSAGE.UNAUTHORIZED,
-  data = {}
-) => {
-  const status = HTTP_STATUS_CODE.UNAUTHORIZED;
-  return res.status(status).json({
-    status,
-    message,
-    data,
-  });
-};
-
-/**
- * Description: The client does not have access rights to the content
- * Return: 403 Forbidden
- */
-export const responseForbiddenRequest = (
-  res,
-  message = HTTP_RESPONSE_MESSAGE.FORBIDDEN,
-  data = {}
-) => {
-  const status = HTTP_STATUS_CODE.FORBIDDEN;
-  return res.status(status).json({
-    status,
-    message,
-    data,
-  });
-};
-
-/**
- * Description: The server has encountered a situation it doesn't know how to handle
- * Return: 500 Internal Server Error
- */
-export const responseInternalServerError = (
-  res,
-  message = HTTP_RESPONSE_MESSAGE.INTERNAL_SERVER_ERROR,
-  data = {}
-) => {
-  const status = HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR;
-  return res.status(status).json({
-    status,
-    message,
-    data,
-  });
+  return res
+    .status(
+      response.status === HTTP_STATUS_CODE.NOT_FOUND ? 200 : response.status
+    )
+    .json(response);
 };

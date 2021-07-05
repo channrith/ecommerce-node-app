@@ -2,11 +2,11 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { ENV } from './constants';
-import { dbConnect } from './configs';
+import { connectDb } from './configs';
 import { authRouter, userRouter } from './routes';
 
 const startServer = async () => {
-  await dbConnect();
+  await connectDb();
 
   const app = express();
 
